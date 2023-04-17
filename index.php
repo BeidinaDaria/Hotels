@@ -1,11 +1,5 @@
 <?php 
-session_start();
-//include_once("pages/functions.php");
-//include_once("pages/admin.php");
-//include_once("pages/comments.php");
-//include_once("pages/menu.php");
-//include_once("pages/register.php");
-//include_once("pages/tours.php");?>
+session_start();?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,6 +35,7 @@ session_start();
 				if($page == 4)include_once('pages/admin.php');
 				if($page==6 && isset($_SESSION['radmin']))include_once("pages/private.php");
 				if($page == 7)include_once('pages/sector.php');
+				if($page == 8)include_once('pages/hotelinfo.php');
 			}
 		?>
 	</div>
