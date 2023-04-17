@@ -4,6 +4,7 @@
     <a class="nav-link" href="index.php?page=2">Комментарии</a>
     <a class="nav-link" href="index.php?page=3">Регистрация</a>
     <a class="nav-link" href="index.php?page=4">Консоль администратора</a>
+    <a class="nav-link" href="index.php?page=8">Информация</a>
     <a class="nav-link" href="index.php?page=7"><button value="AddSector">Добавить страну</button></a>
     <?php 
     $host='localhost';
