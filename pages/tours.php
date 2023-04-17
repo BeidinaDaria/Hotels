@@ -1,0 +1,64 @@
+<h2>Select Tours</h2>
+<hr>
+<?php
+$host='localhost';
+$user='root';
+$pass='1469023578';
+$dbname='hotels';
+$link=mysqli_connect($host,$user,$pass) or die('connection error');
+mysqli_select_db($link,$dbname) or die('DB open error');
+echo '<form action="index.php?page=1" method="post">';
+echo '<select name="countryid" class="col-sm-3 col-md-3 col-lg-3">';
+$res=mysqli_query($link,"SELECT * FROM countries ORDER BY country");
+echo '<option value="0">Select country...</option>';
+while ($row=mysqli_fetch_array($res, MYSQL_NUM)) {
+    echo '<option value="'.$row[0].'">'.$row[1].'</option>';
+}
+mysqli_free_result($res);
+echo '<input type="submit" name="selcountry" value="Select Country" class="btn btn-xs btn-primary">';
+echo '</select>';
+if(isset($_POST['selcountry']))
+{
+    echo '<br/>';
+    $countryid=$_POST['countryid'];
+    if($countryid == 0) exit();
+    $result=mysqli_query($link,"SELECT * FROM cities WHERE countryID=".$countryid." ORDER BY city");
+    echo '<select name="cityid" class="col-sm-3 col-md-3 col-lg-3">';
+    echo '<option value="0">Select city...</option>';
+    while ($row=mysqli_fetch_array($result,MYSQL_NUM)) {
+        echo '<option value="'.$row[0].'">'
+        .$row[1].'</option>';
+    }
+    mysqli_free_result($result);
+    echo '</select>';
+    echo '<input type="submit" name="selcity" value="Select City" class="btn btn-xs btn-primary">';
+}
+echo '</form>';
+if(isset($_POST['selcity']))
+{
+    $cityid=$_POST['cityid'];
+    $sel='SELECT co.country, ci.city, ho.hotel,ho.cost, ho.stars, ho.ID FROM hotels ho, cities ci, countries co 
+    WHERE ho.cityID=ci.ID AND ho.countryid=co.id AND ho.cityID='.$cityid;
+    $res=mysqli_query($link,$sel);
+    echo '<table width="100%" class="table tablestriped tbtours text-center">';
+    echo '<thead style="font-weight: bold"> 
+    <td>Hotel</td>
+    <td>Country</td>
+    <td>City</td>
+    <td>Price</td>
+    <td>Stars</td>
+    <td>link</td>
+    </thead>';
+    while ($row=mysqli_fetch_array($res,MYSQL_NUM))
+    {
+        echo '<tr id="'.$row[1].'">';
+        echo '<td>'.$row[2].'</td>
+        <td>'.$row[0].'</td>
+        <td>'.$row[1].'</td>
+        <td>$'.$row[3].'</td>
+        <td>'.$row[4].'</td>
+        <td><a href="pages/hotelinfo.php?hotel='.$row[5].'" target="_blank"> more info</a></td>';
+        echo '</tr>';
+    }
+    echo '</table><br>';
+}
