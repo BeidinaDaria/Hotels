@@ -9,46 +9,38 @@
     <body>
     <?php
     include_once("functions.php");
-    if(isset($_GET['hotel'])){
-        $host='localhost';
+    $host='localhost';
         $user='root';
         $pass='1469023578';
         $dbname='hotels';
-        $hotel=$_GET['hotel'];
         $link=mysqli_connect($host,$user,$pass) or die('connection error');
         mysqli_select_db($link,$dbname) or die('DB open error');
-        $sel='SELECT * FROM hotels WHERE ID='.$hotel;
+        $sel='SELECT * FROM hotels';
         $res=mysqli_query($link,$sel);
-        $row=mysqli_fetch_array($res,MYSQL_NUM);
-        $hname=$row[1];
-        $hstars=$row[4];
-        $hcost=$row[5];
-        $hinfo=$row[6];
-        mysqli_free_result($res);
-        echo '<h2 class="text-uppercase textcenter">'.$hname.'</h2>';
-        echo '<div class="row"><div class="col-md-6 textcenter">';
-        $host='localhost';
-        $user='root';
-        $pass='1469023578';
-        $dbname='hotels';
-        $hotel=$_GET['hotel'];
-        $link=mysqli_connect($host,$user,$pass) or die('connection error');
-        mysqli_select_db($link,$dbname) or die('DB open error');
-        $sel='SELECT imagepath FROM images WHERE hotelID='.$hotel;
-        $res=mysqli_query($link,$sel);
-        echo '<span class="label label-info">Watch our pictures</span>';
-        echo'<ul id="gallery">';
-        $i=0;
-        while($row=mysqli_fetch_array($res,MYSQL_NUM)){
-        echo ' <li><img src="../'.$row[0].'"></li>';
+        $row=mysqli_fetch_array($res,MYSQLI_NUM);
+        echo '<select name="hotel" class="select" width="100%">';
+        while ($row=mysqli_fetch_array($res,MYSQLI_NUM)) {
+            echo '<option>'.$row[1].'</option>';
         }
+        echo '</select>';
         mysqli_free_result($res);
-        echo ' </ul>';
-        for ($i=0; $i<$hstars; $i++)
-        {
-            echo '<image src="../images/star.png" alt="star">';
+    if(isset($_GET['hotel'])){
+        $sel='SELECT * FROM hotels WHERE Hotel='. $_GET['hotel'];
+        $res=mysqli_query($link,$sel);
+        $row=mysqli_fetch_array($res,MYSQLI_NUM);
+        echo '<table><tr>';
+        for ($i=0;$i<mysqli_num_rows($res);$i++) {
+            echo '<td>'.$row[$i].'</td>';
+        }
+        echo '</tr></table>';
+        $hid=$row[0];
+        mysqli_free_result($res);
+        $sel='SELECT UserID,Comment FROM comments WHERE HotelID='. $hid;
+        $res=mysqli_query($link,$sel);
+        $row=mysqli_fetch_array($res,MYSQLI_NUM);
+        for ($i=0;$i<mysqli_num_rows($res);$i++) {
+            echo '<h1>'.$row[$i][0].'</h1>';
+            echo '<p>'.$row[$i][1].'</p>';
         }
     }
-$hotelid=$_GET['hotel'];
-'SELECT * FROM hotels WHERE ID='. $hotelid;
-'SELECT * FROM images WHERE hotelID='. $hotelid;
+?>
