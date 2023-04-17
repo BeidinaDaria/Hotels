@@ -42,4 +42,43 @@
 		 }
 		 echo "</div>";
 	}
+	if (!isset($_SESSION['ruser']))
+	{
+		echo "<h3/><span style='color:red;'>Please, sign in!</span><h3/>";
+		exit();
+	}
+	$host='localhost';
+   	$user='root';
+   	$pass='1469023578';
+   	$dbname='hotels';
+   	$link=mysqli_connect($host,$user,$pass) or die('connection error');
+	mysqli_select_db($link,$dbname) or die('DB open error');
+    $sel='SELECT * FROM hotels';
+	$res=mysqli_query($link,$sel);
+	echo '<select name="hotel" class="select" width="100%">';
+	while ($row=mysqli_fetch_array($res,MYSQLI_NUM)) {
+		echo '<option>'.$row[1].'</option>';
+	}
+	echo '</select>';
+	mysqli_free_result($res);
+	echo '<input type="text" name="comment" placeholder="Your comment">';
+	echo '<input type="submit" name="adddesc" value="Add your description" class="btn btn-sm btn-info">';
+	if(isset($_POST['adddesc'])){
+		$hotel=trim(htmlspecialchars($_POST['hotel']));
+		$comment=intval(trim(htmlspecialchars($_POST['comment'])));
+		if ($hotel==""||$comment=="") exit();
+		$sel="SELECT HotelID FROM hotels WHERE Hotel=".$hotel;
+		$res=mysqli_query($link,$sel);
+		$row=mysqli_fetch_array($res,MYSQLI_NUM);
+		$hotelid=$row[0];
+		$sel="SELECT UserID FROM users WHERE Login=".$_POST['login'];
+		$res=mysqli_query($link,$sel);
+		$row=mysqli_fetch_array($res,MYSQLI_NUM);
+		$userid=$row[0];
+		$ins='INSERT INTO comments(UserID,HotelID,Comment) VALUES('.$userid.','.$hotelid.',"'.$comment.'")';
+		mysqli_query($link,$ins);
+		echo "<script>";
+		echo "window.location=document.URL;";
+		echo "</script>";
+	}
 ?>
